@@ -1,13 +1,34 @@
-import React from 'react';
-import {View, Text, StyleSheet, StatusBar} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  SafeAreaView,
+  FlatList,
+  Text,
+  StyleSheet,
+  StatusBar,
+} from 'react-native';
+
+import api from './services/api';
 
 export default function App() {
+  const [techs, setTechs] = useState([]);
+
+  useEffect(() => {
+    api.get('techs').then((res) => setTechs(res.data));
+  }, []);
+
   return (
     <>
       <StatusBar barStyle="light-content" />
-      <View style={styles.container}>
-        <Text style={styles.title}>Hello GoStack</Text>
-      </View>
+
+      <SafeAreaView style={styles.container}>
+        <FlatList
+          data={techs}
+          keyExtractor={(tech) => tech.id}
+          renderItem={({ item: tech }) => (
+            <Text style={styles.title}>{tech.title}</Text>
+          )}
+        />
+      </SafeAreaView>
     </>
   );
 }
@@ -20,8 +41,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
+    fontSize: 20,
     color: '#fff',
   },
 });
